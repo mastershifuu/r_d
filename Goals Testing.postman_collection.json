@@ -1,0 +1,1568 @@
+{
+	"info": {
+		"_postman_id": "5bb99515-dcc8-4196-9300-c006545c8050",
+		"name": "Goals Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13388880"
+	},
+	"item": [
+		{
+			"name": "Get Goals",
+			"item": [
+				{
+					"name": "Goals list Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields, goals and folders should be an array\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('goals');\r",
+									"    pm.expect(responseData).to.have.property('folders');\r",
+									"    pm.expect(responseData.goals).to.be.an('array');\r",
+									"    pm.expect(responseData.folders).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/team/{{team_id}}/goal?include_completed=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team",
+								"{{team_id}}",
+								"goal"
+							],
+							"query": [
+								{
+									"key": "include_completed",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goals list 401 Invalid team id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 401\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Team not authorized\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/team/{{invalid_team_id}}/goal?include_completed=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team",
+								"{{invalid_team_id}}",
+								"goal"
+							],
+							"query": [
+								{
+									"key": "include_completed",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goals list 400 Authorization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Authorization header required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/team/{{team_id}}/goal?include_completed=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team",
+								"{{team_id}}",
+								"goal"
+							],
+							"query": [
+								{
+									"key": "include_completed",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Goal",
+			"item": [
+				{
+					"name": "Create Goal Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.goal).to.have.all.keys(\r",
+									"        'id', 'pretty_id', 'name', 'team_id', 'creator', 'color', 'date_created', 'start_date',\r",
+									"        'due_date', 'description', 'private', 'archived', 'multiple_owners', 'editor_token',\r",
+									"        'date_updated', 'folder_id', 'folder_name', 'members', 'group_members', 'owners',\r",
+									"        'key_results', 'key_result_count', 'percent_completed', 'history', 'pretty_url'\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"goal_id\", jsonData.goal.id);\r",
+									"pm.collectionVariables.set(\"goal_name\", jsonData.goal.name);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "Authorization",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test {{$randomProductName}}\",\n    \"due_date\": 1568036964079,\n    \"description\": \"Goal Description {{$randomWords}}\",\n    \"multiple_owners\": true,\n    \"color\": \"#32a852\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/team/{{team_id}}/goal",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team",
+								"{{team_id}}",
+								"goal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Goal 500 without name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 500\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"null value in column\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"due_date\": 1568036964079,\n    \"description\": \"Goal Description\",\n    \"multiple_owners\": true,\n    \"color\": \"#32a852\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/team/{{team_id}}/goal",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"team",
+								"{{team_id}}",
+								"goal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Goal",
+			"item": [
+				{
+					"name": "Goal Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('goal');\r",
+									"    pm.expect(responseData.goal).to.be.an('object');\r",
+									"    pm.expect(responseData.goal).to.have.all.keys(\r",
+									"        'id', 'pretty_id', 'name', 'team_id', 'creator', 'color', 'date_created',\r",
+									"        'start_date', 'due_date', 'description', 'private', 'archived', \r",
+									"        'multiple_owners', 'editor_token', 'date_updated', 'folder_id', \r",
+									"        'folder_name', 'members', 'group_members', 'owners', 'key_results', \r",
+									"        'key_result_count', 'percent_completed', 'history', 'pretty_url'\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify goal name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.goal.name).to.eql(pm.collectionVariables.get(\"goal_name\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goal 403 Invalid id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 403\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(403);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/goal/{{invalid_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{invalid_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goal 404 id is empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/goal/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update Goal",
+			"item": [
+				{
+					"name": "Update Goal Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate the structure of the 'goal' object\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.goal).to.be.an('object');\r",
+									"    pm.expect(responseData.goal).to.have.property('id');\r",
+									"    pm.expect(responseData.goal).to.have.property('pretty_id');\r",
+									"    pm.expect(responseData.goal).to.have.property('name');\r",
+									"    pm.expect(responseData.goal).to.have.property('team_id');\r",
+									"    pm.expect(responseData.goal).to.have.property('creator');\r",
+									"    pm.expect(responseData.goal).to.have.property('color');\r",
+									"    pm.expect(responseData.goal).to.have.property('date_created');\r",
+									"    pm.expect(responseData.goal).to.have.property('start_date');\r",
+									"    pm.expect(responseData.goal).to.have.property('due_date');\r",
+									"    pm.expect(responseData.goal).to.have.property('description');\r",
+									"    pm.expect(responseData.goal).to.have.property('private');\r",
+									"    pm.expect(responseData.goal).to.have.property('archived');\r",
+									"    pm.expect(responseData.goal).to.have.property('multiple_owners');\r",
+									"    pm.expect(responseData.goal).to.have.property('editor_token');\r",
+									"    pm.expect(responseData.goal).to.have.property('date_updated');\r",
+									"    pm.expect(responseData.goal).to.have.property('folder_id');\r",
+									"    pm.expect(responseData.goal).to.have.property('folder_name');\r",
+									"    pm.expect(responseData.goal).to.have.property('members');\r",
+									"    pm.expect(responseData.goal).to.have.property('group_members');\r",
+									"    pm.expect(responseData.goal).to.have.property('owners');\r",
+									"    pm.expect(responseData.goal).to.have.property('key_results');\r",
+									"    pm.expect(responseData.goal).to.have.property('key_result_count');\r",
+									"    pm.expect(responseData.goal).to.have.property('percent_completed');\r",
+									"    pm.expect(responseData.goal).to.have.property('history');\r",
+									"    pm.expect(responseData.goal).to.have.property('pretty_url');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Goal object has required fields in correct format\", function () {\r",
+									"    const responseData = pm.response.json().goal;\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.id).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.pretty_id).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.name).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.team_id).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.creator).to.be.a('number');\r",
+									"    pm.expect(responseData.color).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.date_created).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.start_date).to.be.null;\r",
+									"    pm.expect(responseData.due_date).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.private).to.be.a('boolean');\r",
+									"    pm.expect(responseData.archived).to.be.a('boolean');\r",
+									"    pm.expect(responseData.multiple_owners).to.be.true;\r",
+									"    pm.expect(responseData.editor_token).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.date_updated).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"    pm.expect(responseData.folder_id).to.be.null;\r",
+									"    pm.expect(responseData.folder_name).to.be.null;\r",
+									"    pm.expect(responseData.members).to.be.an('array');\r",
+									"    pm.expect(responseData.group_members).to.be.an('array');\r",
+									"    pm.expect(responseData.owners).to.be.an('array');\r",
+									"    pm.expect(responseData.key_results).to.be.an('array');\r",
+									"    pm.expect(responseData.key_result_count).to.be.a('number');\r",
+									"    pm.expect(responseData.percent_completed).to.be.a('number');\r",
+									"    pm.expect(responseData.history).to.be.an('array');\r",
+									"    pm.expect(responseData.pretty_url).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated {{$randomProductName}}\",\n    \"due_date\": 1568036964079,\n    \"description\": \"Updated {{$randomWords}}\",\n    \"color\": \"#32a852\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Goal 400 no data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"No updates were passed\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Goal 404  invalid goal id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Goal Not Found\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Updated {{$randomProductName}}\",\r\n    \"due_date\": 1568036964079,\r\n    \"description\": \"Updated {{$randomWords}}\",\r\n    \"color\": \"#32a852\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{invalid_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{invalid_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Goal 500 invalid input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 500\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"invalid input syntax\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated {{$randomProductName}}\",\n    \"due_date\": \"string\",\n    \"description\": \"Updated {{$randomWords}}\",\n    \"color\": \"#32a852\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Key Result",
+			"item": [
+				{
+					"name": "Create Key Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    const requiredFields = [\r",
+									"        \"id\",\r",
+									"        \"goal_id\",\r",
+									"        \"name\",\r",
+									"        \"creator\",\r",
+									"        \"type\",\r",
+									"        \"date_created\",\r",
+									"        \"unit\",\r",
+									"        \"workspace_id\",\r",
+									"        \"goal_pretty_id\",\r",
+									"        \"percent_completed\",\r",
+									"        \"completed\",\r",
+									"        \"task_ids\",\r",
+									"        \"subcategory_ids\",\r",
+									"        \"owners\",\r",
+									"        \"last_action\"\r",
+									"    ];\r",
+									"    \r",
+									"    requiredFields.forEach(field => {\r",
+									"        pm.expect(responseData.key_result).to.have.property(field);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"ID, goal_id, creator, workspace_id, goal_pretty_id, and last_action ID are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.key_result.id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"ID should not be empty\");\r",
+									"    pm.expect(responseData.key_result.goal_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"goal_id should not be empty\");\r",
+									"    pm.expect(responseData.key_result.workspace_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"workspace_id should not be empty\");\r",
+									"    pm.expect(responseData.key_result.goal_pretty_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"goal_pretty_id should not be empty\");\r",
+									"    pm.expect(responseData.key_result.last_action.id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"last_action ID should not be empty\");\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"key_goal_id\", jsonData.key_result.id);\r",
+									"pm.collectionVariables.set(\"key_goal_name\", jsonData.key_result.name);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Key {{$randomProductName}}\",\n    \"type\": \"number\",\n    \"steps_start\": 0,\n    \"steps_end\": 10,\n    \"unit\": \"km\",\n    \"task_ids\": [],\n    \"list_ids\": []\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}/key_result",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}",
+								"key_result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key 404 invalid goal id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Goal Not Found\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Key {{$randomProductName}}\",\n    \"type\": \"number\",\n    \"steps_start\": 0,\n    \"steps_end\": 10,\n    \"unit\": \"km\",\n    \"task_ids\": [],\n    \"list_ids\": []\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{invalid_goal_id}}/key_result",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{invalid_goal_id}}",
+								"key_result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key 400 without name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Key result must have a name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"number\",\n    \"steps_start\": 0,\n    \"steps_end\": 10,\n    \"unit\": \"km\",\n    \"task_ids\": [],\n    \"list_ids\": []\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}/key_result",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}",
+								"key_result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key 400 start equal end",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Steps start must not equal steps end\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Key {{$randomProductName}}\",\n    \"type\": \"number\",\n    \"steps_start\": 10,\n    \"steps_end\": 10,\n    \"unit\": \"km\",\n    \"task_ids\": [],\n    \"list_ids\": []\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}/key_result",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}",
+								"key_result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key 500 invalid input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"invalid input syntax\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Key {{$randomProductName}}\",\n    \"type\": \"number\",\n    \"steps_start\": \"string start\",\n    \"steps_end\": \"string end\",\n    \"unit\": \"km\",\n    \"task_ids\": [],\n    \"list_ids\": []\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}/key_result",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}",
+								"key_result"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edit Key Result",
+			"item": [
+				{
+					"name": "Edit Key Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.key_result.id).to.exist;\r",
+									"    pm.expect(responseData.key_result.goal_id).to.exist;\r",
+									"    pm.expect(responseData.key_result.name).to.exist;\r",
+									"    pm.expect(responseData.key_result.creator).to.exist;\r",
+									"    pm.expect(responseData.key_result.type).to.exist;\r",
+									"    pm.expect(responseData.key_result.date_created).to.exist;\r",
+									"    pm.expect(responseData.key_result.unit).to.exist;\r",
+									"    pm.expect(responseData.key_result.workspace_id).to.exist;\r",
+									"    pm.expect(responseData.key_result.goal_pretty_id).to.exist;\r",
+									"    pm.expect(responseData.key_result.completed).to.exist;\r",
+									"    pm.expect(responseData.key_result.task_ids).to.exist;\r",
+									"    pm.expect(responseData.key_result.subcategory_ids).to.exist;\r",
+									"    pm.expect(responseData.key_result.owners).to.exist;\r",
+									"    pm.expect(responseData.key_result.last_action).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Task IDs array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.key_result.task_ids).to.be.an('array');\r",
+									"    pm.expect(responseData.key_result.task_ids).to.have.lengthOf(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Name is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.key_result.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should be a non-empty string\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Percent completed is either null or a valid number\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    const percentCompleted = responseData.key_result.percent_completed;\r",
+									"    \r",
+									"    pm.expect(percentCompleted).to.satisfy((value) => value === null || !isNaN(value), \"Percent completed should be either null or a valid number\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"steps_current\": 5,\n    \"note\": \"{{$randomWords}}\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/key_result/{{key_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								"{{key_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Key 404 invalid key id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Key Result Not Found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"steps_current\": 5,\n    \"note\": \"{{$randomWords}}\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/key_result/{{invalid_key_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								"{{invalid_key_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Key 404 without key id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"  pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"steps_current\": 5,\n    \"note\": \"{{$randomWords}}\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/key_result/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Key 400 without current step",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"  pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"No valid edit options passed\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"note\": \"{{$randomWords}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/key_result/{{key_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								"{{key_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Key Result",
+			"item": [
+				{
+					"name": "Delete Key Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/key_result/{{key_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								"{{key_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Key 404 invalid key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Key Result Not Found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/key_result/{{invalid_key_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"key_result",
+								"{{invalid_key_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Goal",
+			"item": [
+				{
+					"name": "Delete Goal Successful Response",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/goal/{{goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{goal_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Goal 404 invalid goal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Goal Not Found\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_2144460532_2SPIKO31DEIQHJM0RMIPY6311W96U1MR"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/goal/{{invalid_goal_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"goal",
+								"{{invalid_goal_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "goal_name",
+			"value": ""
+		},
+		{
+			"key": "goal_id",
+			"value": ""
+		},
+		{
+			"key": "invalid_goal_id",
+			"value": "11cd7ecc-ef11-11e1-9e9c-0e111cf111d1",
+			"type": "string"
+		},
+		{
+			"key": "team_id",
+			"value": "9012325907",
+			"type": "string"
+		},
+		{
+			"key": "invalid_team_id",
+			"value": "1111111111",
+			"type": "string"
+		},
+		{
+			"key": "key_goal_id",
+			"value": ""
+		},
+		{
+			"key": "key_goal_name",
+			"value": ""
+		},
+		{
+			"key": "invalid_key_id",
+			"value": "111d1111-89a6-111e-1111-07d111111d3d",
+			"type": "string"
+		}
+	]
+}
