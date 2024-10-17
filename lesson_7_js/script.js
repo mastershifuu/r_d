@@ -10,8 +10,8 @@ fs.readFile('test-data/spaces.json', 'utf8', (err, data) => {
             });
 
             folder.lists.forEach(list => {
-                if (list.name.toLowerCase().startsWith("test")) {
-                    console.log(`Space Name: ${list.space.name}, Space ID: ${list.space.id}`);
+                if (list.name.startsWith("test")) {
+                    console.log(`Name: ${list.space.name}, ID: ${list.space.id}`);
                 }
             });
         }
