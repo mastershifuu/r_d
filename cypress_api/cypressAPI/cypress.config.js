@@ -1,0 +1,27 @@
+const { defineConfig } = require('cypress');
+const {allureCypress} = require("allure-cypress/reporter");
+const {platform, release, version} = require("node:os");
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      allureCypress(on, config, {
+        environmentInfo: {
+          os_platform: platform(),
+          os_release: release(),
+          os_version: version(),
+          node_version: process.version,
+        },
+        resultsDir: "allure-results",
+      })
+      return config;
+    },
+    specPattern: "cypress/e2e/**/*.{cy,spec}.{js,ts}",
+    baseUrl: "https://api.clickup.com/api/v2",
+    env: {
+      allureLogCypress:false,
+      allureReuseAfterSpec: true,
+      token: 'pk_152469247_OORX1DGXVHKGI1YMKWETB3GZT06WYMTI'
+    }
+  },
+})
