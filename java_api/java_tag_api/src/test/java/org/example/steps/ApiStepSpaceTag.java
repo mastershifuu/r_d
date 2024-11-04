@@ -32,16 +32,22 @@ public class ApiStepSpaceTag extends BaseSteps {
     public void updateSpaceTagFromFile(String path) throws IOException {
         String source = "data/" + path;
         JSONObject body = ResourceUtils.readJson(source);
-        Response response = spacesRestClient.putSpaceTagFromFile(body.toString());
+        Response response = spacesRestClient.postSpaceTagFromFile(body.toString());
         sharedTestData.setResponse(response);
+        JSONObject newBody = ResourceUtils.readJson(source);
+        Response newResponse = spacesRestClient.putSpaceTagFromFile(newBody.toString());
+        sharedTestData.setResponse(newResponse);
     }
 
     @When("Delete space tag from file {}")
     public void deleteSpaceTagFromFile(String path) throws IOException {
         String source = "data/" + path;
         JSONObject body = ResourceUtils.readJson(source);
-        Response response = spacesRestClient.deleteSpaceTagFromFile(body.toString());
+        Response response = spacesRestClient.postSpaceTagFromFile(body.toString());
         sharedTestData.setResponse(response);
+        JSONObject newBody = ResourceUtils.readJson(source);
+        Response newResponse = spacesRestClient.deleteSpaceTagFromFile(newBody.toString());
+        sharedTestData.setResponse(newResponse);
     }
 
 }
