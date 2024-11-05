@@ -1,13 +1,17 @@
+import os
+
 import requests
+from dotenv import load_dotenv
+load_dotenv()
 
 class Session(requests.Session):
 
-    base_url = 'https://api.clickup.com/api/v2'
+    base_url = os.getenv('BASE_URL')
 
     def request(self, method, url, *args, **kwargs):
         if self.base_url:
             url = self.base_url + url
         headers = kwargs.get('header', {})
-        headers['Authorization'] = 'pk_152618641_ZFBF6LO5I2TXLFCLFF38544OIOCDSERA'
+        headers['Authorization'] = os.getenv('TOKEN')
         kwargs['headers'] = headers
         return super().request(method, url, *args, **kwargs)
