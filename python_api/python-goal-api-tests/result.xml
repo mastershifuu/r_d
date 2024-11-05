@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="1.290" timestamp="2024-11-05T19:44:56.073677+02:00" hostname="LA"><testcase classname="Tests.test_goals" name="test_get_goal[Susan Jones-200-Create new goal]" time="0.183" /><testcase classname="Tests.test_goals" name="test_get_goal[Susan Jones-200-Get goal]" time="0.369" /><testcase classname="Tests.test_goals" name="test_get_goal[-400-Create new goal]" time="0.195" /><testcase classname="Tests.test_goals" name="test_get_goal[-400-Get goal]" time="0.169"><failure message="AssertionError: Request failed with body {&quot;goal&quot;:{&quot;id&quot;:&quot;c6c6d272-4a5a-4a65-b762-37c20349ad36&quot;,&quot;pretty_id&quot;:&quot;28&quot;,&quot;name&quot;:&quot;&quot;,&quot;team_id&quot;:&quot;9012463084&quot;,&quot;creator&quot;:152618641,&quot;color&quot;:&quot;#32a852&quot;,&quot;date_created&quot;:&quot;1730828697735&quot;,&quot;start_date&quot;:null,&quot;due_date&quot;:&quot;1568036964079&quot;,&quot;description&quot;:&quot;Artist.&quot;,&quot;private&quot;:false,&quot;archived&quot;:false,&quot;multiple_owners&quot;:null,&quot;editor_token&quot;:&quot;goal:c6c6d272-4a5a-4a65-b762-37c20349ad36:43ddb79e-7659-4143-ba0e-3f3c778dbb6f:1e965db4-ce9a-4b29-99dd-9d3fc4ad5043&quot;,&quot;date_updated&quot;:&quot;1730828697735&quot;,&quot;folder_id&quot;:null,&quot;folder_name&quot;:null,&quot;members&quot;:[],&quot;group_members&quot;:[],&quot;owners&quot;:[],&quot;key_results&quot;:[],&quot;key_result_count&quot;:0,&quot;percent_completed&quot;:0,&quot;history&quot;:[],&quot;pretty_url&quot;:&quot;https://app.clickup.com/9012463084/goals/28&quot;}}&#10;assert 200 == 400&#10; +  where 200 = &lt;Response [200]&gt;.status_code">parameter_name = '', status = 400
+
+    @test_steps('Create new goal', 'Get goal')
+    @pytest.mark.parametrize('parameter_name, status', [
+        (fake.name(), 200),
+        ("", 400),
+    ])
+    def test_get_goal(parameter_name, status):
+        body = {
+            "name": parameter_name,
+            "due_date": 1568036964079,
+            "description": fake.text(10),
+            "color": "#32a852"
+        }
+        response = requests.post(f'{base_url}{goal_url}', headers = head, data=body)
+        yield
+        goal_id = response.json()['goal']['id']
+        response = requests.get(f'{base_url}/goal/{goal_id}', headers = head)
+&gt;       assert  response.status_code == status, f"Request failed with body {response.text}"
+E       AssertionError: Request failed with body {"goal":{"id":"c6c6d272-4a5a-4a65-b762-37c20349ad36","pretty_id":"28","name":"","team_id":"9012463084","creator":152618641,"color":"#32a852","date_created":"1730828697735","start_date":null,"due_date":"1568036964079","description":"Artist.","private":false,"archived":false,"multiple_owners":null,"editor_token":"goal:c6c6d272-4a5a-4a65-b762-37c20349ad36:43ddb79e-7659-4143-ba0e-3f3c778dbb6f:1e965db4-ce9a-4b29-99dd-9d3fc4ad5043","date_updated":"1730828697735","folder_id":null,"folder_name":null,"members":[],"group_members":[],"owners":[],"key_results":[],"key_result_count":0,"percent_completed":0,"history":[],"pretty_url":"https://app.clickup.com/9012463084/goals/28"}}
+E       assert 200 == 400
+E        +  where 200 = &lt;Response [200]&gt;.status_code
+
+Tests\test_goals.py:55: AssertionError</failure></testcase></testsuite></testsuites>
